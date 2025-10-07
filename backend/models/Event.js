@@ -11,6 +11,10 @@ const eventSchema = new mongoose.Schema({
   description: String,
   date: { type: Date, required: true },
   auditorium: { type: String, required: true, trim: true },
+  // layoutKey refers to a key in backend/config/auditoriumLayouts.js
+  layoutKey: { type: String, default: null },
+  // optional per-event overrides: { rows: [{ rowLabel, seats }] }
+  layoutOverrides: { type: mongoose.Schema.Types.Mixed, default: null },
   seats: [seatSchema]
 }, { timestamps: true });
 

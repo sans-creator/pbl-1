@@ -1,15 +1,22 @@
 import express from "express";
 import {
-  createEvent,       // ✅ new controller
+  createEvent,       
   getEvents,
   getEventById,
   getEventSeats,
   bookSeats,
+  getAuditoriumLayouts,
+  updateEventLayout,
 } from "../controllers/eventController.js";
 
 const router = express.Router();
 
 router.post("/", createEvent);
+
+// Admin: get available auditorium layouts
+router.get('/layouts', getAuditoriumLayouts);
+// Admin-only: update event layout
+router.put('/:id/layout', updateEventLayout);
 
 router.get("/", getEvents);          
 router.get("/:id", getEventById);    
