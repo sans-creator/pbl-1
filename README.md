@@ -4,10 +4,11 @@ A complete **full-stack web application** that allows students and admins to man
 Built for our **department’s Software Development Club (SDC)** to streamline event management and bookings efficiently.
 
 <img width="1885" height="981" alt="image" src="https://github.com/user-attachments/assets/22376ebe-78a9-4f9a-9552-5a561bc34e1d" />
-<img width="1855" height="950" alt="image" src="https://github.com/user-attachments/assets/6d12dc5f-839d-4c8d-adb0-f534574cfcec" />
 <img width="1730" height="981" alt="image" src="https://github.com/user-attachments/assets/d8889076-8bbe-487b-9ed5-4ff32078460b" />
 <img width="1881" height="962" alt="image" src="https://github.com/user-attachments/assets/8c33697b-344c-458c-83b3-7d09917dd79b" />
 <img width="1267" height="449" alt="image" src="https://github.com/user-attachments/assets/1ac57868-6e6b-4510-a7f2-5bb4268114ff" />
+<img width="1903" height="1036" alt="image" src="https://github.com/user-attachments/assets/43c91ff7-c8ef-4e16-9a68-9d3cca29c95a" />
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/1ade0676-44c8-448e-bb2a-39e4b7b111a7" />
 
 
 
@@ -140,5 +141,6 @@ Show Your Support
 
 If you like this project, please ⭐ star the repo on GitHub and share it with your peers!
 Your feedback and contributions are welcome.
+
 
 
