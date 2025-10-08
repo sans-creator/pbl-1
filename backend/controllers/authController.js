@@ -11,12 +11,10 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // domain restriction
-    if (!email.endsWith("@muj.manipal.edu")) {
-      return res
-        .status(400)
-        .json({ message: "Only @muj.manipal.edu emails allowed" });
-    }
+    if (!email.toLowerCase().trim().endsWith("@muj.manipal.edu")) {
+  return res.status(400).json({ message: "Only @muj.manipal.edu emails allowed" });
+}
+
 
     const existing = await User.findOne({ email });
     if (existing) {
@@ -36,6 +34,7 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
@@ -48,7 +47,16 @@ export const loginUser = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    res.json({ token, user });
+    // Send  fields to frontend
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,   
+        email: user.email,
+        role: user.role
+      }
+    });
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: err.message });
