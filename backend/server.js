@@ -17,9 +17,20 @@ dotenv.config();
 const app = express();
 
 // Middleware setup
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://sans-creator-pbl-1.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173", // Frontend URL (Vite default)
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
