@@ -1,0 +1,25 @@
+/* SeatSelector small helper styles */
+.seat-tooltip {
+	position: absolute;
+	background: rgba(0,0,0,0.8);
+	color: white;
+	padding: 6px 8px;
+	border-radius: 6px;
+	font-size: 12px;
+	pointer-events: none;
+	transform: translateY(-8px);
+}
+
+.selection-summary {
+	min-height: 40px;
+}
+
+button:focus {
+	outline: 3px solid rgba(59,130,246,0.5);
+	outline-offset: 2px;
+}
+
+.w-10.h-10 {
+	line-height: 2.5rem;
+}
+

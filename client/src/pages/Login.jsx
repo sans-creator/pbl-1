@@ -1,95 +1,153 @@
-import { useState } from "react";
-import api from "../api/axios";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import bgImage from "../assets/image.png";
+import logo from "../assets/mujLogo.png";
 
-function Login() {
-  const [isLogin, setIsLogin] = useState(true);
+export default function Login() {
+  const { login, signup } = useAuth();
+  const navigate = useNavigate();
+
+  const [isSignup, setIsSignup] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowForm(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
-      if (isLogin) {
-        const res = await api.post("/auth/login", { email, password });
-        localStorage.setItem("token", res.data.token);
-        alert("Login successful!");
-        window.location.href = "/dashboard";
+      let user;
+      if (isSignup) {
+        if (!name) throw new Error("Name is required");
+        if (password !== confirmPassword) throw new Error("Passwords do not match");
+
+        user = await signup(name, email, password);
       } else {
-        const res = await api.post("/auth/register", { name, email, password });
-        alert(res.data.message);
-        setIsLogin(true);
+        user = await login(email, password);
       }
+
+      if (user?.role === "admin") navigate("/admin");
+      else navigate("/");
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Something went wrong");
+      setError(err.response?.data?.message || err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-2xl shadow-md w-96"
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
+      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+
+      <div
+        className={`relative z-10 w-full max-w-md p-8 bg-white bg-opacity-95 rounded-2xl shadow-xl transition-all duration-700 ease-out transform ${
+          showForm ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
+        }`}
       >
-        <h2 className="text-2xl font-semibold mb-6 text-center text-orange-600">
-          {isLogin ? "Login" : "Sign Up"}
+        <div className="flex justify-center mb-6">
+          <img
+            src={logo}
+            alt="University Logo"
+            className="h-16 w-16 rounded-full border-2 border-orange-400"
+          />
+        </div>
+
+        <h2 className="text-3xl font-bold mb-6 text-center text-orange-500 transition-all duration-500">
+          {isSignup ? "Sign Up" : "Login"}
         </h2>
 
-        {!isLogin && (
-          <input
-            type="text"
-            placeholder="Full Name"
-            className="w-full p-2 mb-4 border rounded"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        )}
+        {error && <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">{error}</div>}
 
-        <input
-          type="email"
-          placeholder="Email (@muj.manipal.edu)"
-          className="w-full p-2 mb-4 border rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 mb-4 border rounded"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-        <button
-          type="submit"
-          className="bg-orange-600 hover:bg-orange-700 text-white w-full py-2 rounded"
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 transition-all duration-500 ease-in-out"
         >
-          {isLogin ? "Login" : "Sign Up"}
-        </button>
+          {isSignup && (
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+              />
+            </div>
+          )}
 
-        <p className="text-center mt-4 text-sm">
-          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+          <div>
+            <label className="block mb-1 font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium text-gray-700">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+          </div>
+
+          {isSignup && (
+            <div>
+              <label className="block mb-1 font-medium text-gray-700">Confirm Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+              />
+            </div>
+          )}
+
           <button
-            type="button"
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-orange-600 font-semibold hover:underline"
+            type="submit"
+            disabled={loading}
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-semibold transition-colors"
           >
-            {isLogin ? "Sign up" : "Login"}
+            {loading ? "Processing..." : isSignup ? "Sign Up" : "Login"}
+          </button>
+        </form>
+
+        <p className="text-sm text-gray-500 mt-4 text-center">
+          {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
+          <button
+            onClick={() => setIsSignup(!isSignup)}
+            className="text-orange-500 font-medium hover:underline transition-all duration-300"
+          >
+            {isSignup ? "Login" : "Sign Up"}
           </button>
         </p>
-      </form>
+
+        <p className="text-sm text-gray-500 mt-2 text-center">
+          Use your university email to {isSignup ? "register" : "login"}
+        </p>
+      </div>
     </div>
   );
 }
-
-export default Login;

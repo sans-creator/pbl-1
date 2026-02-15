@@ -1,3 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+	--app-bg: #f8fafc;
+	--brand-strong: #c2410c;
+	--brand: #ea580c;
+	--brand-soft: #fed7aa;
+	--ink: #0f172a;
+}
+
+body {
+	font-family: "Space Grotesk", "Segoe UI", sans-serif;
+	background: var(--app-bg);
+	color: var(--ink);
+}
+
+.page-transition {
+	animation: pageFadeSlide 360ms ease both;
+}
+
+@keyframes pageFadeSlide {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

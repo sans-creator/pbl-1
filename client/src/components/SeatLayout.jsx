@@ -1,53 +1,62 @@
-// src/components/SeatLayout.jsx
 import React from "react";
 
-export default function SeatLayout({
-  rows,
-  columns,
-  occupiedSeats = [],
-  selectedSeats = [],
-  highlightedSeats = [],
-  maxSelection = 5,
-  onSelect,
-}) {
-  const handleClick = (seat) => {
-    if (occupiedSeats.includes(seat)) return; // already booked
-    if (selectedSeats.includes(seat)) {
-      onSelect(selectedSeats.filter((s) => s !== seat));
-    } else if (selectedSeats.length < maxSelection) {
-      onSelect([...selectedSeats, seat]);
+const SeatLayout = ({ rows, columns, occupiedSeats, selectedSeats, highlightedSeats = [], maxSelection, onSelect }) => {
+  const handleSeatClick = (seatNumber) => {
+    const upperSeat = seatNumber.toUpperCase();
+    if (occupiedSeats.includes(upperSeat)) return; // booked
+    if (selectedSeats.includes(upperSeat)) {
+      onSelect(selectedSeats.filter(s => s !== upperSeat));
+    } else {
+      if (selectedSeats.length < maxSelection) {
+        onSelect([...selectedSeats, upperSeat]);
+      }
     }
   };
 
-  return (
-    <div className="flex flex-col gap-2">
-      {rows.map((row) => (
-        <div key={row} className="flex gap-2">
-          {Array.from({ length: columns }, (_, i) => {
-            const seat = `${row}${i + 1}`;
-            const isOccupied = occupiedSeats.includes(seat);
-            const isSelected = selectedSeats.includes(seat);
-            const isHighlighted = highlightedSeats.includes(seat);
+  const renderSeat = (row, col) => {
+    const seatNumber = `${row}${col}`;
+    const upperSeat = seatNumber.toUpperCase();
+    let bgColor = "bg-green-500"; // available
 
-            return (
-              <button
-                key={seat}
-                onClick={() => handleClick(seat)}
-                disabled={isOccupied}
-                className={`w-10 h-10 rounded text-white font-bold transition-colors duration-150 ${
-                  isOccupied
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : isSelected
-                    ? "bg-green-500"
-                    : "bg-orange-600 hover:bg-orange-700"
-                } ${isHighlighted ? 'ring-2 ring-red-500 animate-pulse' : ''}`}
-              >
-                {seat}
-              </button>
-            );
-          })}
+    if (occupiedSeats.includes(upperSeat)) bgColor = "bg-gray-400";
+    else if (selectedSeats.includes(upperSeat)) bgColor = "bg-yellow-400";
+    else if (highlightedSeats.includes(upperSeat)) bgColor = "bg-gray-300";
+
+    return (
+      <div
+        key={seatNumber}
+        onClick={() => handleSeatClick(seatNumber)}
+        className={`${bgColor} w-10 h-10 flex items-center justify-center m-1 rounded-md text-white text-sm font-semibold cursor-pointer`}
+        title={seatNumber}
+      >
+        {seatNumber}
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex flex-col items-center">
+      {rows.map((row) => (
+        <div key={row} className="flex justify-center mb-2">
+          {Array.from({ length: columns }, (_, i) => renderSeat(row, i + 1))}
         </div>
       ))}
+      <div className="flex justify-center mt-4 space-x-6 text-sm">
+        <div className="flex items-center space-x-2">
+          <div className="w-4 h-4 bg-green-500 rounded-sm"></div>
+          <span>Available</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-4 h-4 bg-gray-500 rounded-sm"></div>
+          <span>Occupied</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-4 h-4 bg-yellow-400 rounded-sm"></div>
+          <span>Selected</span>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default SeatLayout;
