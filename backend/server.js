@@ -20,6 +20,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "https://sans-creator-pbl-1.vercel.app",
+  "https://pbl-1-sage.vercel.app",
 ];
 
 app.use(
