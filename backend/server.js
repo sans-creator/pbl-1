@@ -17,17 +17,20 @@ dotenv.config();
 const app = express();
 
 // Middleware setup
-app.use(cors({
-  origin: "http://localhost:5173", // Frontend URL (Vite default)
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Frontend URL (Vite default)
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 // ✅ MongoDB connection FIRST
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("✅ MongoDB connected successfully");
 
@@ -38,6 +41,10 @@ mongoose.connect(process.env.MONGODB_URI, {
     app.use("/api/events", bookingRoutes);
     app.use("/api/bookings", bookingRoutes);
     app.use("/api/admin", adminRoutes);
+
+    app.get("/", (req, res) => {
+      res.send("API is running...");
+    });
 
     // Error middleware
     app.use(errorHandler);
